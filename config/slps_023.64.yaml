@@ -1,0 +1,75 @@
+name: Chrono Cross (USA)
+sha1: 26c3da2599af76f7e352b8594d048b527d6bd0d9
+options:
+  basename: slps_023.64
+  target_path: disc/extracted/prog/slps_023.64
+  elf_path: build/slps_023.64.elf
+  base_path: ../
+  platform: psx
+  compiler: PSYQ
+
+  asm_path: asm/slps_023.64
+  src_path: src/slps_023.64
+  build_path: build
+  # create_asm_dependencies: True
+
+  ld_script_path: linker/slps_023.64.ld
+  ld_dependencies: True
+
+  find_file_boundaries: False
+  gp_value: 0x80059170
+  global_vram_start: 0x80010000
+
+  o_as_suffix: False
+  use_legacy_include_asm: False
+
+  asm_function_macro: glabel
+  asm_jtbl_label_macro: jlabel
+  asm_data_macro: dlabel
+
+  section_order: [".rodata", ".text", ".sdata", ".data", ".sbss", ".bss"]
+  # auto_link_sections: [".data", ".rodata", ".bss"]
+
+  symbol_addrs_path: 
+    - config/symbol_addrs.slps_023.64.txt
+  reloc_addrs_path: 
+    - config/reloc_addrs.txt
+
+  undefined_funcs_auto_path: linker/undefined_funcs_auto.slps_023.64.txt
+  undefined_syms_auto_path: linker/undefined_syms_auto.slps_023.64.txt
+
+  extensions_path: tools/splat_ext
+
+  subalign: 4
+
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  migrate_rodata_to_functions: false
+  data_string_guesser_level: 2
+
+  ld_bss_is_noload: True
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: main
+    type: code
+    start: 0x800
+    vram: 0x80010000
+    bss_size: 0x40000 # yolo
+    bss_contains_common: True
+    align: 4
+    subsegments:
+      - [0x800, rodata]
+      - [0x18B8, asm] # start
+      - [0x196C, asm]
+      - [0x26A98, asm]
+      - [0x2A274, asm]
+      - [0x2D63C, asm]
+      - [0x2E3A0, asm] # start at StSetRing
+      - [0x331A0, asm]
+      - [0x33548, asm]
+      - [0x394E4, sdata]
+      - [0x61000]

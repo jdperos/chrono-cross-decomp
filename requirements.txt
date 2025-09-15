@@ -1,0 +1,1 @@
+splat64[mips]
