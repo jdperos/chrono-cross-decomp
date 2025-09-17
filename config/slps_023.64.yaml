@@ -17,7 +17,7 @@ options:
   ld_dependencies: True
 
   find_file_boundaries: False
-  gp_value: 0x80059170
+  gp_value: 0x0
   global_vram_start: 0x80010000
 
   o_as_suffix: False
@@ -62,14 +62,22 @@ segments:
     bss_contains_common: True
     align: 4
     subsegments:
-      - [0x800, rodata]
-      - [0x18B8, asm] # start
-      - [0x196C, asm]
-      - [0x26A98, asm]
-      - [0x2A274, asm]
-      - [0x2D63C, asm]
-      - [0x2E3A0, asm] # start at StSetRing
-      - [0x331A0, asm]
-      - [0x33548, asm]
-      - [0x394E4, sdata]
-      - [0x61000]
+      - [0x800, asm]
+      - [0x1A2BC]
+      - [0x1A670, asm]
+      - [0x46C6C, data] # 8005646C START RODATA
+      - [0x46EF0]
+      - [0x46EFC, data] # 800566FC
+      - [0x5983A, data] # 8006903A
+      - [0x59DF4, data] # 800695F4
+      - [0x5A834, data] # 8006A034
+      - [0x5ACD4]
+      - [0x5ACD8, data]
+      - [0x5B1F5, data] # actually SDATA
+      - [0x5C8BC, data] # 8006C0BC # END RODATA
+      - [0x5C93C, data] # 8006C13C
+      - [0x63AC0, data] # 800732C0
+      - [0x858B0, data] # 800950B0
+      - [0x85FE4, asm] # 800957E4
+      - [0x98248, data] # 800A7A48
+      - [0x9A800]

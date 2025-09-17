@@ -51,7 +51,7 @@ OBJDUMP_FLAGS       := --disassemble-all --reloc --disassemble-zeroes -Mreg-name
 SPLAT_FLAGS         := --disassemble-all --make-full-disasm-for-code
 DUMPSXISO_FLAGS     := -x $(ROM_DIR) -s $(ROM_DIR)/layout.xml $(ROM_DIR)/$(GAME_NAME).bin
 MKPSXISO_FLAGS      := -y -q $(ROM_DIR)/shgame.xml
-DL_FLAGS := -G8
+DL_FLAGS := -G0
 AS_FLAGS := $(ENDIAN) $(INCLUDE_FLAGS) $(OPT_FLAGS) $(DL_FLAGS) -march=r3000 -mtune=r3000 -no-pad-sections
 CC_FLAGS := $(OPT_FLAGS) $(DL_FLAGS) -mips1 -mcpu=3000 -w -funsigned-char -fpeephole -ffunction-cse -fpcc-struct-return -fcommon -fverbose-asm -msoft-float -mgas -fgnu-linker -quiet
 #MASPSX_FLAGS := --use-comm-section --run-assembler $(AS_FLAGS)
@@ -60,7 +60,7 @@ CC_FLAGS := $(OPT_FLAGS) $(DL_FLAGS) -mips1 -mcpu=3000 -w -funsigned-char -fpeep
 # Main-related and psyq code seem to use -G0 instead of -G8
 define DL_FlagsSwitch
 	$(if
-		$(or 
+		$(or
 			$(filter MAIN,$(patsubst build/src/slps_023.64/psyq/%,MAIN,$(1))),
 			$(filter MAIN,$(patsubst build/asm/slps_023.64/psyq/%,MAIN,$(1)))
 		),
@@ -69,7 +69,7 @@ define DL_FlagsSwitch
 	)
 
 	$(if
-		$(or 
+		$(or
 			$(filter MAIN,$(patsubst build/src/slps_023.64/main/main_loop%,MAIN,$(1))),
 			$(filter MAIN,$(patsubst build/asm/slps_023.64/main/main_loop%,MAIN,$(1))),
 			$(filter MAIN,$(patsubst build/src/slps_023.64/psyq/%,MAIN,$(1))),
