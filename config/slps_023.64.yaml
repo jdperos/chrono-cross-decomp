@@ -63,6 +63,8 @@ segments:
     align: 4
     subsegments:
       - [0x800, asm]
+      - [0x18F20, asm, psyq/libspu]
+      - [0x19DF0, asm]
       - [0x1A2BC]
       - [0x1A670, asm]
       - [0x46C6C, data] # 8005646C START RODATA
