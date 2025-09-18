@@ -137,6 +137,7 @@ $2.elf: $(call gen_o_files, $1)
 		-T $(LINKER_DIR)/$1.ld \
 		-T $(LINKER_DIR)/$(filter-out ./,$(dir $1))undefined_syms_auto.$(notdir $1).txt \
 		-T $(LINKER_DIR)/$(filter-out ./,$(dir $1))undefined_funcs_auto.$(notdir $1).txt \
+        -T $(CONFIG_DIR)/undefined_funcs_manual.$(notdir $1).txt \
 		-o $$@
 endef
 
@@ -182,13 +183,8 @@ extract:
 	@set -euo pipefail; \
 	echo "Searching for cdrom.dat under ./disk ..."; \
 	DAT=$$(find disc -type f -name 'cdrom.dat' -print -quit); \
-	echo butt
-	echo $DAT
-	echo fart
 	mkdir -p "$(EXTRACT_DIR)"; \
-	# Try unzip, then 7z, then bsdtar
 	if command -v 7z >/dev/null 2>&1; then \
-		echo "Using 7z..."; \
 		7z x -y -o"$(EXTRACT_DIR)" "disc/cdrom.dat"; \
 	fi; \
 

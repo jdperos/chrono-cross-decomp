@@ -17,7 +17,7 @@ options:
   ld_dependencies: True
 
   find_file_boundaries: False
-  gp_value: 0x0
+  gp_value: 0x80073B70
   global_vram_start: 0x80010000
 
   o_as_suffix: False
@@ -27,7 +27,6 @@ options:
   asm_jtbl_label_macro: jlabel
   asm_data_macro: dlabel
 
-  section_order: [".rodata", ".text", ".sdata", ".data", ".sbss", ".bss"]
   # auto_link_sections: [".data", ".rodata", ".bss"]
 
   symbol_addrs_path: 
@@ -58,28 +57,26 @@ segments:
     type: code
     start: 0x800
     vram: 0x80010000
+    bss_size: 0x21500
+    bss_contains_common: True
+    align: 4
+    section_order: [".text", ".rodata", ".sdata", ".data", ".sbss", ".bss"]
+    subsegments:
+      - [0x800, asm]
+      - [0x46C6C, rodata]
+      - [0x5B290, data]
+      - [0x85898]
+
+  - name: secondary
+    type: code
+    start: 0x85898 # 0x80095098
+    vram: 0x80095098
     bss_size: 0x40000 # yolo
     bss_contains_common: True
     align: 4
+    section_order: [".rodata", ".text", ".sdata", ".data", ".sbss", ".bss"]
     subsegments:
-      - [0x800, asm]
-      - [0x18F20, asm, psyq/libspu]
-      - [0x19DF0, asm]
-      - [0x1A2BC]
-      - [0x1A670, asm]
-      - [0x46C6C, data] # 8005646C START RODATA
-      - [0x46EF0]
-      - [0x46EFC, data] # 800566FC
-      - [0x5983A, data] # 8006903A
-      - [0x59DF4, data] # 800695F4
-      - [0x5A834, data] # 8006A034
-      - [0x5ACD4]
-      - [0x5ACD8, data]
-      - [0x5B1F5, data] # actually SDATA
-      - [0x5C8BC, data] # 8006C0BC # END RODATA
-      - [0x5C93C, data] # 8006C13C
-      - [0x63AC0, data] # 800732C0
-      - [0x858B0, data] # 800950B0
-      - [0x85FE4, asm] # 800957E4
-      - [0x98248, data] # 800A7A48
+      - [0x85898, rodata]
+      - [0x85FE4, asm]
+      - [0x98250, data]
       - [0x9A800]
