@@ -1,3 +1,26 @@
 _main = 0x80010000;
 start = 0x80010008;
 main  = 0x8001A684;
+
+// PSY-Q SPU (libspu)
+SpuInit = 0x80028720;
+_SpuInit = 0x80028740;
+SpuStart = 0x80028828;
+_spu_init = 0x800288A0;
+_spu_FwriteByIO = 0x80028B20;
+_spu_FiDMA = 0x80028CE0;
+_spu_Fr_ = 0x80028D9C;
+_spu_t = 0x80028E44;
+_spu_Fw = 0x800290C4;
+_spu_Fr = 0x80029148;
+_spu_FsetRXX = 0x800291AC;
+_spu_FsetRXXa = 0x800291F0;
+_spu_getRXXa = 0x80029294;
+_spu_FsetPCR = 0x800292D0;
+_spu_FsetDelayW = 0x80029328;
+_spu_FsetDelayR = 0x80029350;
+_spu_Fw1ts = 0x80029378;
+_SpuDataCallback = 0x800293E0;
+SpuSetReverb = 0x80029410;
+_SpuIsInAllocateArea = 0x800294E0;
+_SpuIsInAllocateArea_ = 0x80029560;
