@@ -643,7 +643,14 @@ void Sound_Cmd_AD_800506E4( FSoundCommandParams* in_Params )
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/soundCommand", Sound_Cmd_D0_800507B0);
+extern s16 D_800919C2;
+extern s32 g_Sound_TempoMultiplier;
+
+void Sound_Cmd_D0_800507B0( FSoundCommandParams* in_Params )
+{
+    g_Sound_TempoMultiplier = (s8)in_Params->Param1 << 0x10;
+    D_800919C2 = 0;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/soundCommand", Sound_Cmd_D1_800507CC);
