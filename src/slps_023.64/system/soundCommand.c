@@ -653,7 +653,20 @@ void Sound_Cmd_D0_800507B0( FSoundCommandParams* in_Params )
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/soundCommand", Sound_Cmd_D1_800507CC);
+extern s32 D_8009193C;
+
+void Sound_Cmd_D1_800507CC( FSoundCommandParams* in_Params )
+{
+    s32 Length;
+
+    Length = 1;
+    if( in_Params->Param1 != 0 )
+    {
+        Length = in_Params->Param1;
+    }
+    D_8009193C = (s32)( ( (s8)in_Params->Param2 << 0x10 ) - g_Sound_TempoMultiplier ) / Length;
+    D_800919C2 = Length;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/soundCommand", Sound_Cmd_D2_80050834);
