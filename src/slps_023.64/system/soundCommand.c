@@ -915,7 +915,7 @@ void Sound_Cmd_AE_80051094( FSoundCommandParams* in_Params )
     u32 ChannelIndex;
 
     ChannelIndex = 0;
-    C_Values = &D_80090A00;
+    C_Values = D_80090A00;
     pChannel = g_SfxSoundChannels;
 
     while( ChannelIndex < SOUND_SFX_CHANNEL_COUNT )
