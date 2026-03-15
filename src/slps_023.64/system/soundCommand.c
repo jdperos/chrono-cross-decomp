@@ -941,18 +941,18 @@ void Sound_Cmd_AF_80051110( FSoundCommandParams* in_Params )
 {
     FSoundChannel* pChannel;
     s32 CurrentChannelMask;
-    u16 Length;
+    s16 Length;
     s32* C_Value;
     u32 Latches;
     u32 ChannelIndex;
     s32 ActiveChannelMask;
     
-    Latches = g_Sound_GlobalFlags.ControlLatches & 0xFFFEFFFF;
+    Latches = g_Sound_GlobalFlags.ControlLatches & ~(1 << 16);
     g_Sound_GlobalFlags.ControlLatches = Latches;
 
     if( g_Sound_VoiceSchedulerState.unk_Flags_0x10 != 0 )
     {
-        g_Sound_GlobalFlags.ControlLatches = Latches & 0xFFFEFFFF;
+        g_Sound_GlobalFlags.ControlLatches = Latches & ~(1 << 16);
         Sound_Cmd_9C_80050EF0( in_Params );
 
         CurrentChannelMask = 1 << SOUND_SFX_CHANNEL_START_INDEX;
@@ -961,7 +961,7 @@ void Sound_Cmd_AF_80051110( FSoundCommandParams* in_Params )
         Length = 1;
         if( in_Params->Param1 != 0 )
         {
-            Length = (u16)in_Params->Param1;
+            Length = in_Params->Param1;
         }
 
         ChannelIndex = 0;
@@ -971,9 +971,9 @@ void Sound_Cmd_AF_80051110( FSoundCommandParams* in_Params )
             C_Value = &D_80090A00[ ChannelIndex ];
             if( ( ActiveChannelMask & CurrentChannelMask ) && !( pChannel->unk_Flags & 0x02000000 ) )
             {
-                pChannel->C_Step = (s16)( (s16)( ( *C_Value << 8 ) + 0x80 ) / (s16)Length );
+                pChannel->C_Step = (s16)( ( *C_Value << 8 ) + 0x80 ) / Length; // Q8 fixed point, +0x80 for rounding
                 pChannel->C_Value = 0;
-                pChannel->C_StepsRemaining = (s16)Length;
+                pChannel->C_StepsRemaining = Length;
             }
             ChannelIndex++;
             pChannel++;
