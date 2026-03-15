@@ -968,7 +968,7 @@ void Sound_Cmd_AF_80051110( FSoundCommandParams* in_Params )
 
         while( ChannelIndex < SOUND_SFX_CHANNEL_COUNT )
         {
-            C_Value = &((s32*)D_80090A00)[ ChannelIndex ];
+            C_Value = &D_80090A00[ ChannelIndex ];
             if( ( ActiveChannelMask & CurrentChannelMask ) && !( pChannel->unk_Flags & 0x02000000 ) )
             {
                 pChannel->C_Step = (s16)( (s16)( ( *C_Value << 8 ) + 0x80 ) / (s16)Length );
