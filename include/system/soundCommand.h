@@ -70,7 +70,11 @@ typedef enum ESoundCommand
 
 } ESoundCommand;
 
+typedef void (*PSoundCommandHandler)(struct FSoundCommandParams*);
+
+extern PSoundCommandHandler g_Sound_CommandHandlers[0x100];
 extern s32 g_Sound_MutedSfxVolumes[ SOUND_SFX_CHANNEL_COUNT ]; // num == SOUND_CHANNEL_COUNT or SOUND_SFX_CHANNEL_COUNT???
+extern FSoundCommandParams g_Sound_CommandContext;
 extern s32 g_Sound_MutedMusicChannelMask ;
 extern s32 D_80094FFC;
 

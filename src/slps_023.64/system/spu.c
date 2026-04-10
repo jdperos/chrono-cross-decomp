@@ -82,7 +82,38 @@ s32 Sound_TryLoadInstrumentBank( FAkaoSequence* in_pAkao, s32 in_bWait)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/spu", Sound_LoadInstrumentBank);
+s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 in_InstrumentIndex, u32 in_StartAddr )
+{
+    FAkaoSequence* Sequence;
+    FSoundInstrumentInfo* InstrumentInfo;
+    FSoundInstrumentInfo* Addr;
+
+    WaitForSpuTransfer();
+
+    if( Sound_IsNotAkaoFile( in_Akao ) == false )
+    {
+        Sequence = in_Akao;
+
+        SpuSetTransferStartAddr( in_StartAddr );
+
+        in_Akao = (FAkaoSequence*)in_Akao->Payload;
+        InstrumentInfo = (FSoundInstrumentInfo*)in_Akao;
+        Addr = InstrumentInfo + Sequence->unk1C;
+        in_Akao = (FAkaoSequence*)in_Akao->Payload;
+
+        WriteSpu( Addr, Sequence->unk14 );
+        Sound_CopyAndRelocateInstruments( InstrumentInfo, &g_InstrumentInfo[ in_InstrumentIndex ], in_StartAddr, Sequence->unk1C );
+
+        if( in_bWait != 0 )
+        {
+            WaitForSpuTransfer();
+        }
+        return 0;
+    }
+
+    g_bSpuTransferring = -1;
+    return AKAO_LOAD_FAILURE;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 #ifndef NON_MATCHING

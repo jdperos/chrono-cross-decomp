@@ -772,6 +772,7 @@ g_SemitonePitchTable              = 0x8007232C;
 g_Sound_LfoWave                   = 0x8007235C;
 g_Sound_StereoPanGainTableQ15     = 0x8007245C; // size:0x200
 g_Sound_LfoTable                  = 0x80072E60;
+g_Sound_CommandHandlers           = 0x80072EC0; // size:0x400
 g_Sound_AkaoOpcodeHandlers        = 0x80073970;
 g_Sound_AkaoOpcodeHandlersExt     = 0x80073AF0;
 g_ActiveMusicChannels             = 0x8008E578; // type:FSoundChannel[] size:0x2480
@@ -815,9 +816,6 @@ g_Sound_GlobalFlags               = 0x80094F90; // type:FSoundGlobalFlags size:0
 g_Sound_Cutscene_StreamState      = 0x80094FA0; // type:FSoundCutsceneStreamState  size:0x5C
 g_Sound_VoiceOwnerContexts        = 0x80095000;
 g_Sound_VoiceModeFlags            = 0x80095070; // type:FSoundVoiceModeFlags size:0xC
-
-
-
 
 
 
