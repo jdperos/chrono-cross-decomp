@@ -585,7 +585,7 @@ void Sound_StopSfx()
 
 //----------------------------------------------------------------------------------------------------------------------
 // TODO(jperos): this function and the downstream ones may take in a void* and cast it somewhere along the line
-s32 func_8004AB8C( s32 arg0, s32 arg1 )
+s32 func_8004AB8C( void* arg0, s32 arg1 )
 {
     s32 bLoadSuccessful;
     do

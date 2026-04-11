@@ -48,18 +48,18 @@ void SetSpuTransferCallback()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void WriteSpu(s32 in_Addr, s32 in_Size)
+void WriteSpu( void* in_Data, s32 in_Size)
 {
     g_bSpuTransferring = 1;
     SpuSetTransferCallback( &ClearSpuTransferCallback );
-    SpuWrite( (u8*)in_Addr, in_Size );
+    SpuWrite( in_Data, in_Size );
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void ReadSpu(s32 in_Addr, s32 in_Size)
+void ReadSpu( void* in_Data, s32 in_Size)
 {
     SetSpuTransferCallback();
-    SpuRead( (u8*)in_Addr, in_Size );
+    SpuRead( in_Data, in_Size );
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 in_Instr
 {
     FAkaoSequence* Sequence;
     FSoundInstrumentInfo* InstrumentInfo;
-    FSoundInstrumentInfo* Addr;
+    void* pSampleData;
 
     WaitForSpuTransfer();
 
@@ -98,11 +98,11 @@ s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 in_Instr
 
         in_Akao = (FAkaoSequence*)in_Akao->Payload;
         InstrumentInfo = (FSoundInstrumentInfo*)in_Akao;
-        Addr = InstrumentInfo + Sequence->unk1C;
+        pSampleData = InstrumentInfo + Sequence->InstrumentCount;
         in_Akao = (FAkaoSequence*)in_Akao->Payload;
 
-        WriteSpu( Addr, Sequence->unk14 );
-        Sound_CopyAndRelocateInstruments( InstrumentInfo, &g_InstrumentInfo[ in_InstrumentIndex ], in_StartAddr, Sequence->unk1C );
+        WriteSpu( pSampleData, Sequence->SampleDataSize );
+        Sound_CopyAndRelocateInstruments( InstrumentInfo, &g_InstrumentInfo[ in_InstrumentIndex ], in_StartAddr, Sequence->InstrumentCount );
 
         if( in_bWait != 0 )
         {
@@ -270,7 +270,7 @@ void Sound_Start()
     SpuInitMalloc( SPU_MALLOC_NUM_BLOCKS, g_SpuMallocRecTable );
     SpuSetTransferMode( SPU_TRANSFER_BY_DMA );
     SpuSetTransferStartAddr( SPU_WAVEFORM_DATA_START );
-    WriteSpu( (s32)g_Sound_NullWaveformBuf, SOUND_NULL_WAVEFORM_BUF_SIZE );
+    WriteSpu( g_Sound_NullWaveformBuf, SOUND_NULL_WAVEFORM_BUF_SIZE );
     WaitForSpuTransfer();
     Sound_Setup();
     SpuSetIRQ( SPU_OFF );
@@ -296,7 +296,7 @@ void Sound_Stop()
 {
     if( g_bSpuTransferring == true )
     {
-        WriteSpu( (s32) g_Sound_NullWaveformBuf, SOUND_NULL_WAVEFORM_BUF_SIZE );
+        WriteSpu( g_Sound_NullWaveformBuf, SOUND_NULL_WAVEFORM_BUF_SIZE );
         WaitForSpuTransfer();
     }
 

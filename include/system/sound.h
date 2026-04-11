@@ -468,9 +468,9 @@ typedef struct
     /* 0x0C */ u32 unk0C;
 
     /* 0x10 */ u32 unk10;
-    /* 0x14 */ u32 unk14;
+    /* 0x14 */ u32 SampleDataSize;
     /* 0x18 */ u32 unk18;
-    /* 0x1C */ u32 unk1C;
+    /* 0x1C */ u32 InstrumentCount;
 
     /* 0x20 */ u32 ChannelEnableMask;
     /* 0x24 */ u32 KeyedMask;
@@ -626,8 +626,8 @@ void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_A, FSoundInstrum
 bool Sound_IsNotAkaoFile( void* in_Blob );
 void ClearSpuTransferCallback();
 void SetSpuTransferCallback();
-void WriteSpu( s32 in_Addr, s32 in_Size );
-void ReadSpu( s32 in_Addr, s32 in_Size );
+void WriteSpu( void* in_Data, s32 in_Size );
+void ReadSpu( void* in_Data, s32 in_Size );
 void WaitForSpuTransfer();
 s32 Sound_TryLoadInstrumentBank( FAkaoSequence* in_pAkao, s32 arg1 );
 s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 arg2, u32 in_StartAddr );
