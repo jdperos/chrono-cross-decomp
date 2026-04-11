@@ -2,6 +2,7 @@
 #define _SOUND_H
 
 #include "common.h"
+#include "psyq/libcd.h"
 #include "psyq/libspu.h"
 
 #define VOICE_COUNT 24
@@ -886,6 +887,7 @@ extern s16* g_Sound_LfoTable[SOUND_LFO_COUNT];
 extern FSoundChannel g_ActiveMusicChannels[SOUND_CHANNEL_COUNT];
 extern u32 D_80090A34;
 extern FSoundChannel g_SfxSoundChannels[SOUND_SFX_CHANNEL_COUNT];
+extern CdlATV g_Sound_CdlATV;
 extern FSoundChannel* g_pSecondaryMusicChannels;
 extern FSoundMusicContext* g_pSuspendedMusicContext; // If non-null, points to a suspended music
 extern FSpuVoiceInfo g_SpuVoiceInfo[VOICE_COUNT];

@@ -628,15 +628,14 @@ void* func_8004AE4C( void* arg0, s32 arg1, s32 arg2 )
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-extern CdlATV D_800917E8;
 int CdMix(CdlATV *vol);
 
 s32 func_8004AE6C( s32 arg0 )
 {
 
-    if( g_Sound_GlobalFlags.MixBehavior & 2 )
+    if( g_Sound_GlobalFlags.MixBehavior & MIX_MODE_MONO )
     {
-        CdlATV* p = &D_800917E8;
+        CdlATV* p = &g_Sound_CdlATV;
         u32 Val;
         Val = (u32)( arg0 * 0xB570 ) >> 0x11;
         p->val3 = (s8)Val;
@@ -644,15 +643,15 @@ s32 func_8004AE6C( s32 arg0 )
         p->val2 = (s8)Val;
         p->val0 = (s8)Val;
     }
-    else
+    else // MIX_MODE_STEREO
     {
-        CdlATV* p = &D_800917E8;
+        CdlATV* p = &g_Sound_CdlATV;
         p->val2 = arg0;
         p->val0 = arg0;
         p->val3 = 0;
         p->val1 = 0;
     }
-    CdMix( &D_800917E8 );
+    CdMix( &g_Sound_CdlATV );
     return 0;
 }
 

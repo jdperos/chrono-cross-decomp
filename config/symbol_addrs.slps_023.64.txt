@@ -779,6 +779,7 @@ g_ActiveMusicChannels             = 0x8008E578; // type:FSoundChannel[] size:0x2
 g_Sound_MutedSfxVolumes           = 0x80090A00; // size:0x30
 D_80090A34                        = 0x80090A34;
 g_SfxSoundChannels                = 0x80090A38; // type:FSoundChannel[] size:0xDB0
+g_Sound_CdlATV                    = 0x800917E8; // type:CdlATV size:0x4
 g_pSecondaryMusicChannels         = 0x800917EC;
 // what is this
 g_pSuspendedMusicContext          = 0x800917F0;
@@ -816,7 +817,6 @@ g_Sound_GlobalFlags               = 0x80094F90; // type:FSoundGlobalFlags size:0
 g_Sound_Cutscene_StreamState      = 0x80094FA0; // type:FSoundCutsceneStreamState  size:0x5C
 g_Sound_VoiceOwnerContexts        = 0x80095000;
 g_Sound_VoiceModeFlags            = 0x80095070; // type:FSoundVoiceModeFlags size:0xC
-
 
 
 _startTime = 0x800757B8;
