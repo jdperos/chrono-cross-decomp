@@ -467,9 +467,9 @@ typedef struct
     /* 0x08 */ u32 unk08;
     /* 0x0C */ u32 unk0C;
 
-    /* 0x10 */ u32 unk10;
+    /* 0x10 */ u32 InstrumentStartAddr;
     /* 0x14 */ u32 SampleDataSize;
-    /* 0x18 */ u32 unk18;
+    /* 0x18 */ u32 InstrumentIndex;
     /* 0x1C */ u32 InstrumentCount;
 
     /* 0x20 */ u32 ChannelEnableMask;
@@ -622,14 +622,14 @@ void Sound_RestoreChannelsByType( u32 in_ChannelType );
 void Sound_FadeOutCutscene( u32 arg0, s32 arg1 );
 
 // SPU management
-void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_A, FSoundInstrumentInfo* in_B, s32 in_AddrOffset, s32 in_Count);
+void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_Src, FSoundInstrumentInfo* in_Dst, s32 in_AddrOffset, s32 in_Count);
 bool Sound_IsNotAkaoFile( void* in_Blob );
 void ClearSpuTransferCallback();
 void SetSpuTransferCallback();
 void WriteSpu( void* in_Data, s32 in_Size );
 void ReadSpu( void* in_Data, s32 in_Size );
 void WaitForSpuTransfer();
-s32 Sound_TryLoadInstrumentBank( FAkaoSequence* in_pAkao, s32 arg1 );
+s32 Sound_TryLoadInstrumentBank( FAkaoSequence* in_pAkao, s32 in_bWait );
 s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 arg2, u32 in_StartAddr );
 void Sound_Setup();
 void Sound_Start();

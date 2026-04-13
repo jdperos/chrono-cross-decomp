@@ -13,15 +13,15 @@
 #include "system/soundCutscene.h"
 
 //----------------------------------------------------------------------------------------------------------------------
-void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_A, FSoundInstrumentInfo* in_B, s32 in_AddrOffset, s32 in_Count )
+void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_Src, FSoundInstrumentInfo* in_Dst, s32 in_AddrOffset, s32 in_Count )
 {
     do {
-        in_B->StartAddr = in_A->StartAddr + in_AddrOffset;
-        in_B->LoopAddr = in_A->LoopAddr + in_AddrOffset;
-        *(s32*)&in_B->FineTune = *(s32*)&in_A->FineTune;
-        *(s32*)&in_B->AdsrLower = *(s32*)&in_A->AdsrLower;
-        in_A++;
-        in_B++;
+        in_Dst->StartAddr = in_Src->StartAddr + in_AddrOffset;
+        in_Dst->LoopAddr = in_Src->LoopAddr + in_AddrOffset;
+        *(s32*)&in_Dst->FineTune = *(s32*)&in_Src->FineTune;
+        *(s32*)&in_Dst->AdsrLower = *(s32*)&in_Src->AdsrLower;
+        in_Src++;
+        in_Dst++;
         in_Count--;
     } while( in_Count != 0 );
 }
@@ -75,17 +75,18 @@ s32 Sound_TryLoadInstrumentBank( FAkaoSequence* in_pAkao, s32 in_bWait)
 {
     if( Sound_IsNotAkaoFile( in_pAkao ) == false )
     {
-        Sound_LoadInstrumentBank( in_pAkao, in_bWait, in_pAkao->unk18, in_pAkao->unk10 );
+        Sound_LoadInstrumentBank( in_pAkao, in_bWait, in_pAkao->InstrumentIndex, in_pAkao->InstrumentStartAddr );
         return AKAO_LOAD_SUCCESS;
     }
     return AKAO_LOAD_FAILURE;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+// TODO(jperos): The variable reuse on this is weird and sort of unclear
 s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 in_InstrumentIndex, u32 in_StartAddr )
 {
     FAkaoSequence* Sequence;
-    FSoundInstrumentInfo* InstrumentInfo;
+    FSoundInstrumentInfo* BankInstrumentInfo;
     void* pSampleData;
 
     WaitForSpuTransfer();
@@ -97,12 +98,12 @@ s32 Sound_LoadInstrumentBank( FAkaoSequence* in_Akao, s32 in_bWait, s32 in_Instr
         SpuSetTransferStartAddr( in_StartAddr );
 
         in_Akao = (FAkaoSequence*)in_Akao->Payload;
-        InstrumentInfo = (FSoundInstrumentInfo*)in_Akao;
-        pSampleData = InstrumentInfo + Sequence->InstrumentCount;
+        BankInstrumentInfo = (FSoundInstrumentInfo*)in_Akao;
+        pSampleData = BankInstrumentInfo + Sequence->InstrumentCount;
         in_Akao = (FAkaoSequence*)in_Akao->Payload;
 
         WriteSpu( pSampleData, Sequence->SampleDataSize );
-        Sound_CopyAndRelocateInstruments( InstrumentInfo, &g_InstrumentInfo[ in_InstrumentIndex ], in_StartAddr, Sequence->InstrumentCount );
+        Sound_CopyAndRelocateInstruments( BankInstrumentInfo, &g_InstrumentInfo[ in_InstrumentIndex ], in_StartAddr, Sequence->InstrumentCount );
 
         if( in_bWait != 0 )
         {

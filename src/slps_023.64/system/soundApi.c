@@ -585,12 +585,12 @@ void Sound_StopSfx()
 
 //----------------------------------------------------------------------------------------------------------------------
 // TODO(jperos): this function and the downstream ones may take in a void* and cast it somewhere along the line
-s32 func_8004AB8C( void* arg0, s32 arg1 )
+s32 func_8004AB8C( void* in_Data, s32 in_bWait )
 {
     s32 bLoadSuccessful;
     do
     {
-        bLoadSuccessful = Sound_TryLoadInstrumentBank( (FAkaoSequence*)arg0, arg1 );
+        bLoadSuccessful = Sound_TryLoadInstrumentBank( (FAkaoSequence*)in_Data, in_bWait );
     } while( bLoadSuccessful == AKAO_LOAD_RETRY );
 
     if( bLoadSuccessful == AKAO_LOAD_FAILURE )
