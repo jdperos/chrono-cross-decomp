@@ -611,8 +611,8 @@ s32 IsSpuTransferring()
 //----------------------------------------------------------------------------------------------------------------------
 s32 func_8004AC0C()
 {
-    D_80095060.StartAddr = 0;
-    g_Sound_GlobalFlags.ControlLatches |= SOUND_CTL_INSTRUMENT_TRANSFER_ACTIVE;
+    g_Sound_AkaoLoadState.SpuTransferStartAddr = 0;
+    g_Sound_GlobalFlags.ControlLatches |= SOUND_CTL_AKAO_TRANSFER_ACTIVE;
     return 0;
 }
 
@@ -627,33 +627,34 @@ u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait )
 
     RemainingSize = in_Size;
 
-    if( g_Sound_GlobalFlags.ControlLatches & 1 )
+    if( g_Sound_GlobalFlags.ControlLatches & SOUND_CTL_AKAO_TRANSFER_ACTIVE )
     {
-        if( D_80095060.StartAddr == 0 )
+        if( g_Sound_AkaoLoadState.SpuTransferStartAddr == 0 )
         {
             if( Sound_IsNotAkaoFile( in_Data ) == false )
             {
-                memcpy32( in_Data, (s32*)&D_80092A68, 0x40);
-                in_Data += 0x10;
-                RemainingSize -= 0x40;
-                D_80095060.StartAddr = D_80092A68.InstrumentStartAddr;
-                D_80092A68.InstrumentIndex = D_80092A68.InstrumentIndex;
-                D_80095060.TotalSize = D_80092A68.SampleDataSize;
-                D_80095060.pInstrumentInfo = &g_InstrumentInfo[ D_80092A68.InstrumentIndex ];
-                D_80095060.Remaining = D_80092A68.InstrumentCount * sizeof(FSoundInstrumentInfo);
+                memcpy32( in_Data, (s32*)&g_Sound_CurrentAkaoSequence, sizeof_FAkaoSequenceHeader);
+                in_Data += sizeof(FSoundInstrumentInfo);
+                RemainingSize -= sizeof_FAkaoSequenceHeader;
+                g_Sound_AkaoLoadState.SpuTransferStartAddr = g_Sound_CurrentAkaoSequence.InstrumentStartAddr;
+                // NOTE(jperos): This is obvious compiler artifact trash
+                g_Sound_CurrentAkaoSequence.InstrumentIndex = g_Sound_CurrentAkaoSequence.InstrumentIndex;
+                g_Sound_AkaoLoadState.SampleBytesRemaining = g_Sound_CurrentAkaoSequence.SampleDataSize;
+                g_Sound_AkaoLoadState.pInstrumentInfoCursor = &g_InstrumentInfo[ g_Sound_CurrentAkaoSequence.InstrumentIndex ];
+                g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining = g_Sound_CurrentAkaoSequence.InstrumentCount * sizeof(FSoundInstrumentInfo);
             }
             else
             {
                 Sound_PlaySfxProtected( VOICE_INVALID_INDEX );
                 RemainingSize = 0;
-                D_80095060.TotalSize = 0;
-                D_80095060.Remaining = 0;
+                g_Sound_AkaoLoadState.SampleBytesRemaining = 0;
+                g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining = 0;
             }
         }
 
-        if( D_80095060.Remaining != 0 )
+        if( g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining != 0 )
         {
-            CopySize = D_80095060.Remaining;
+            CopySize = g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining;
 
             if( RemainingSize != 0 )
             {
@@ -662,29 +663,30 @@ u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait )
                     CopySize = RemainingSize;
                 }
 
-                memcpy32( in_Data, D_80095060.pInstrumentInfo, CopySize );
+                memcpy32( in_Data, g_Sound_AkaoLoadState.pInstrumentInfoCursor, CopySize );
+                // HACK: preserves original scheduling for WordCount assignment
                 do { WordCount = CopySize / 4; } while (0);
                 in_Data += WordCount;
-                D_80095060.pInstrumentInfo = (u8*)D_80095060.pInstrumentInfo + ( WordCount * 4 );
-                D_80095060.Remaining -= CopySize;
+                g_Sound_AkaoLoadState.pInstrumentInfoCursor = (u8*)g_Sound_AkaoLoadState.pInstrumentInfoCursor + ( WordCount * 4 );
+                g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining -= CopySize;
                 RemainingSize -= CopySize;
 
-                if( D_80095060.Remaining == 0 )
+                if( g_Sound_AkaoLoadState.InstrumentInfoBytesRemaining == 0 )
                 {
                     Sound_CopyAndRelocateInstruments(
-                        &g_InstrumentInfo[D_80092A68.InstrumentIndex],
-                        &g_InstrumentInfo[D_80092A68.InstrumentIndex],
-                        (s32)D_80092A68.InstrumentStartAddr,
-                        (s32)D_80092A68.InstrumentCount );
+                        &g_InstrumentInfo[g_Sound_CurrentAkaoSequence.InstrumentIndex],
+                        &g_InstrumentInfo[g_Sound_CurrentAkaoSequence.InstrumentIndex],
+                        (s32)g_Sound_CurrentAkaoSequence.InstrumentStartAddr,
+                        (s32)g_Sound_CurrentAkaoSequence.InstrumentCount );
                 }
             }
         }
 
         if( RemainingSize != 0 )
         {
-            TransferSize = D_80095060.TotalSize;
+            TransferSize = g_Sound_AkaoLoadState.SampleBytesRemaining;
 
-            if( D_80095060.TotalSize != 0 )
+            if( g_Sound_AkaoLoadState.SampleBytesRemaining != 0 )
             {
                 WriteSize = TransferSize;
 
@@ -694,25 +696,25 @@ u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait )
                 }
 
                 RemainingSize = WriteSize;
-                SpuSetTransferStartAddr( D_80095060.StartAddr );
+                SpuSetTransferStartAddr( g_Sound_AkaoLoadState.SpuTransferStartAddr );
                 WriteSpu( in_Data, (s32)RemainingSize );
-                D_80095060.StartAddr += RemainingSize;
-                D_80095060.TotalSize -= RemainingSize;
+                g_Sound_AkaoLoadState.SpuTransferStartAddr += RemainingSize;
+                g_Sound_AkaoLoadState.SampleBytesRemaining -= RemainingSize;
 
-                if( in_bWait != 0 )
+                if( in_bWait )
                 {
                     WaitForSpuTransfer();
                 }
             }
         }
 
-        if( D_80095060.TotalSize == 0 )
+        if( g_Sound_AkaoLoadState.SampleBytesRemaining == 0 )
         {
-            g_Sound_GlobalFlags.ControlLatches &= ~1;
+            g_Sound_GlobalFlags.ControlLatches &= ~SOUND_CTL_AKAO_TRANSFER_ACTIVE;
         }
     }
 
-    return D_80095060.TotalSize;
+    return g_Sound_AkaoLoadState.SampleBytesRemaining;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

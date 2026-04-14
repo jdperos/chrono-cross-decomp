@@ -285,7 +285,7 @@ typedef enum EMixMode
 
 typedef enum EControlLatches
 {
-    SOUND_CTL_INSTRUMENT_TRANSFER_ACTIVE    = 1U <<  0, /* SPU instrument upload/relocation in progress; set before transfer, cleared on finish, gates unk_Spu_8004ac2c() */
+    SOUND_CTL_AKAO_TRANSFER_ACTIVE    = 1U <<  0, /* SPU instrument upload/relocation in progress; set before transfer, cleared on finish, gates unk_Spu_8004ac2c() */
     SOUND_CTL_SFX_FADE_END_CALLBACK_PENDING = 1U << 16, /* set when global SFX fade starts; triggers Sound_Cmd_9D when last channel VolumeModStepsRemaining hits 0 */
 } EControlLatches;
 
@@ -308,14 +308,14 @@ typedef struct
 } FSoundInstrumentInfo; /* size 0x10 */
 static_assert( sizeof(FSoundInstrumentInfo) == 0x10 );
 
-typedef struct FSound80095060
+typedef struct FSoundAkaoLoadState
 {
-    /* 0x00 */ FSoundInstrumentInfo* pInstrumentInfo;
-    /* 0x04 */ u32 StartAddr;
-    /* 0x08 */ u32 TotalSize;
-    /* 0x0C */ u32 Remaining;
-} FSound80095060;
-static_assert( sizeof(FSound80095060) == 0x10 );
+    /* 0x00 */ FSoundInstrumentInfo* pInstrumentInfoCursor;
+    /* 0x04 */ u32 SpuTransferStartAddr;
+    /* 0x08 */ u32 SampleBytesRemaining;
+    /* 0x0C */ u32 InstrumentInfoBytesRemaining;
+} FSoundAkaoLoadState;
+static_assert( sizeof(FSoundAkaoLoadState) == 0x10 );
 
 // NOTE(jperos): I am beginning to think that this might be the SFX analogue to FSoundMusicContext
 typedef struct FSoundSfxState
@@ -493,7 +493,8 @@ typedef struct
     /* 0x3C */ u32 unk3C;
     /* 0x40 */ u8  Payload[1];  // starts at 0x40 (variable length)
 } FAkaoSequence; // size 0x40 (header), data blob variable
-static_assert( sizeof(FAkaoSequence) - align(sizeof(member_type(FAkaoSequence,Payload))) == 0x40 );
+#define sizeof_FAkaoSequenceHeader (sizeof(FAkaoSequence) - align(sizeof(member_type(FAkaoSequence,Payload))))
+static_assert( sizeof_FAkaoSequenceHeader == 0x40 );
 
 typedef enum EAkaoLoadStatus
 {
@@ -919,7 +920,7 @@ extern FSoundMusicContext* g_pActiveMusicContext;
 extern FSoundFadeTimer g_Sound_MasterFadeTimer;
 extern s32 g_Sound_CdVolumeFadeStep;
 extern s16 g_Sound_CdVolumeFadeLength;
-extern FAkaoSequence D_80092A68; // TODO(jperos): name FAkaoSequence global
+extern FAkaoSequence g_Sound_CurrentAkaoSequence; // TODO(jperos): name FAkaoSequence global
 extern FSoundSfxState g_Sound_SfxState;
 extern FSoundCommandParams g_Sound_Vm2Params;
 extern s32 g_CdVolume;
@@ -931,7 +932,7 @@ extern s32 g_Sound_TempoScale;
 extern s32 g_Sound_MasterPitchScaleQ16_16;
 extern FSoundGlobalFlags g_Sound_GlobalFlags;
 extern FSoundMusicContext* g_Sound_VoiceOwnerContexts[VOICE_COUNT];
-extern FSound80095060 D_80095060;
+extern FSoundAkaoLoadState g_Sound_AkaoLoadState;
 extern FSoundVoiceModeFlags g_Sound_VoiceModeFlags;
 
 #define SPU_MALLOC_NUM_BLOCKS (4)
