@@ -609,17 +609,111 @@ s32 IsSpuTransferring()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-extern s32 D_80095064;
-
 s32 func_8004AC0C()
 {
-    D_80095064 = 0;
+    D_80095060.StartAddr = 0;
     g_Sound_GlobalFlags.ControlLatches |= SOUND_CTL_INSTRUMENT_TRANSFER_ACTIVE;
     return 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-INCLUDE_ASM("asm/slps_023.64/nonmatchings/system/soundApi", func_8004AC2C);
+u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait )
+{
+    u32 RemainingSize;
+    u32 TransferSize;
+    u32 WriteSize;
+    u32 WordCount;
+    u32 CopySize;
+
+    RemainingSize = in_Size;
+
+    if( g_Sound_GlobalFlags.ControlLatches & 1 )
+    {
+        if( D_80095060.StartAddr == 0 )
+        {
+            if( Sound_IsNotAkaoFile( in_Data ) == false )
+            {
+                memcpy32( in_Data, (s32*)&D_80092A68, 0x40);
+                in_Data += 0x10;
+                RemainingSize -= 0x40;
+                D_80095060.StartAddr = D_80092A68.InstrumentStartAddr;
+                D_80092A68.InstrumentIndex = D_80092A68.InstrumentIndex;
+                D_80095060.TotalSize = D_80092A68.SampleDataSize;
+                D_80095060.pInstrumentInfo = &g_InstrumentInfo[ D_80092A68.InstrumentIndex ];
+                D_80095060.Remaining = D_80092A68.InstrumentCount * sizeof(FSoundInstrumentInfo);
+            }
+            else
+            {
+                Sound_PlaySfxProtected( VOICE_INVALID_INDEX );
+                RemainingSize = 0;
+                D_80095060.TotalSize = 0;
+                D_80095060.Remaining = 0;
+            }
+        }
+
+        if( D_80095060.Remaining != 0 )
+        {
+            CopySize = D_80095060.Remaining;
+
+            if( RemainingSize != 0 )
+            {
+                if( CopySize >= RemainingSize )
+                {
+                    CopySize = RemainingSize;
+                }
+
+                memcpy32( in_Data, D_80095060.pInstrumentInfo, CopySize );
+                do { WordCount = CopySize / 4; } while (0);
+                in_Data += WordCount;
+                D_80095060.pInstrumentInfo = (u8*)D_80095060.pInstrumentInfo + ( WordCount * 4 );
+                D_80095060.Remaining -= CopySize;
+                RemainingSize -= CopySize;
+
+                if( D_80095060.Remaining == 0 )
+                {
+                    Sound_CopyAndRelocateInstruments(
+                        &g_InstrumentInfo[D_80092A68.InstrumentIndex],
+                        &g_InstrumentInfo[D_80092A68.InstrumentIndex],
+                        (s32)D_80092A68.InstrumentStartAddr,
+                        (s32)D_80092A68.InstrumentCount );
+                }
+            }
+        }
+
+        if( RemainingSize != 0 )
+        {
+            TransferSize = D_80095060.TotalSize;
+
+            if( D_80095060.TotalSize != 0 )
+            {
+                WriteSize = TransferSize;
+
+                if( WriteSize >= RemainingSize )
+                {
+                    WriteSize = RemainingSize;
+                }
+
+                RemainingSize = WriteSize;
+                SpuSetTransferStartAddr( D_80095060.StartAddr );
+                WriteSpu( in_Data, (s32)RemainingSize );
+                D_80095060.StartAddr += RemainingSize;
+                D_80095060.TotalSize -= RemainingSize;
+
+                if( in_bWait != 0 )
+                {
+                    WaitForSpuTransfer();
+                }
+            }
+        }
+
+        if( D_80095060.TotalSize == 0 )
+        {
+            g_Sound_GlobalFlags.ControlLatches &= ~1;
+        }
+    }
+
+    return D_80095060.TotalSize;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 void* func_8004AE4C( void* arg0, s32 arg1, s32 arg2 )

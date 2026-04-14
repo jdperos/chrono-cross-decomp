@@ -4,6 +4,7 @@
 #include "common.h"
 #include "psyq/libcd.h"
 #include "psyq/libspu.h"
+#include "types.h"
 
 #define VOICE_COUNT 24
 #define VOICE_INVALID_INDEX VOICE_COUNT
@@ -306,6 +307,15 @@ typedef struct
     /* 0x0E */ u16 AdsrUpper;
 } FSoundInstrumentInfo; /* size 0x10 */
 static_assert( sizeof(FSoundInstrumentInfo) == 0x10 );
+
+typedef struct FSound80095060
+{
+    /* 0x00 */ FSoundInstrumentInfo* pInstrumentInfo;
+    /* 0x04 */ u32 StartAddr;
+    /* 0x08 */ u32 TotalSize;
+    /* 0x0C */ u32 Remaining;
+} FSound80095060;
+static_assert( sizeof(FSound80095060) == 0x10 );
 
 // NOTE(jperos): I am beginning to think that this might be the SFX analogue to FSoundMusicContext
 typedef struct FSoundSfxState
@@ -619,6 +629,7 @@ void Sound_SetMutedMusicChannelMask( u32 in_ChannelMask );
 void Sound_SetMusicJumpThreshold( u32 arg0 );
 void Sound_SuspendChannelsByType( u32 in_ChannelType );
 void Sound_RestoreChannelsByType( u32 in_ChannelType );
+u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait );
 void Sound_FadeOutCutscene( u32 arg0, s32 arg1 );
 
 // SPU management
@@ -908,6 +919,7 @@ extern FSoundMusicContext* g_pActiveMusicContext;
 extern FSoundFadeTimer g_Sound_MasterFadeTimer;
 extern s32 g_Sound_CdVolumeFadeStep;
 extern s16 g_Sound_CdVolumeFadeLength;
+extern FAkaoSequence D_80092A68; // TODO(jperos): name FAkaoSequence global
 extern FSoundSfxState g_Sound_SfxState;
 extern FSoundCommandParams g_Sound_Vm2Params;
 extern s32 g_CdVolume;
@@ -919,6 +931,7 @@ extern s32 g_Sound_TempoScale;
 extern s32 g_Sound_MasterPitchScaleQ16_16;
 extern FSoundGlobalFlags g_Sound_GlobalFlags;
 extern FSoundMusicContext* g_Sound_VoiceOwnerContexts[VOICE_COUNT];
+extern FSound80095060 D_80095060;
 extern FSoundVoiceModeFlags g_Sound_VoiceModeFlags;
 
 #define SPU_MALLOC_NUM_BLOCKS (4)

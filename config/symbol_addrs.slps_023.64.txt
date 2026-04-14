@@ -444,6 +444,7 @@ Sound_FadeCdVolume                  = 0x8004A914;
 Sound_FadeCdVolumeFrom              = 0x8004A944;
 Sound_StopMusic                     = 0x8004AB4C;
 Sound_StopSfx                       = 0x8004AB6C;
+Sound_StreamAkaoBankChunk           = 0x8004AC2C;
 Sound_FadeOutCutscene               = 0x8004AF50;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -804,6 +805,7 @@ g_pActiveMusicContext             = 0x80092A48;
 g_Sound_MasterFadeTimer           = 0x80092A50; // type:FSoundFadeTimer size:0x10
 g_Sound_CdVolumeFadeStep          = 0x80092A60;
 g_Sound_CdVolumeFadeLength        = 0x80092A64;
+D_80092A68                        = 0x80092A68; // type:FAkaoSequence size:0x40
 g_Sound_SfxState                  = 0x80092AA8; // type:FSoundSfxState size:0x30
 g_Sound_Vm2Params                 = 0x80092AD8; // type:FSoundCommandParams size:0x18
 g_CdVolume                        = 0x80092AF8; // size:0x4
@@ -816,6 +818,7 @@ g_Sound_TempoScale                = 0x80094F8C;
 g_Sound_GlobalFlags               = 0x80094F90; // type:FSoundGlobalFlags size:0xC
 g_Sound_Cutscene_StreamState      = 0x80094FA0; // type:FSoundCutsceneStreamState  size:0x5C
 g_Sound_VoiceOwnerContexts        = 0x80095000;
+D_80095060                        = 0x80095060; // type:FSound80095060 size:0x10
 g_Sound_VoiceModeFlags            = 0x80095070; // type:FSoundVoiceModeFlags size:0xC
 
 
