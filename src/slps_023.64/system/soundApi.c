@@ -609,7 +609,7 @@ s32 IsSpuTransferring()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-s32 func_8004AC0C()
+s32 Sound_StartAkaoBankStreaming()
 {
     g_Sound_AkaoLoadState.SpuTransferStartAddr = 0;
     g_Sound_GlobalFlags.ControlLatches |= SOUND_CTL_AKAO_TRANSFER_ACTIVE;

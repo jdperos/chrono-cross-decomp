@@ -630,6 +630,7 @@ void Sound_SetMutedMusicChannelMask( u32 in_ChannelMask );
 void Sound_SetMusicJumpThreshold( u32 arg0 );
 void Sound_SuspendChannelsByType( u32 in_ChannelType );
 void Sound_RestoreChannelsByType( u32 in_ChannelType );
+s32 Sound_StartAkaoBankStreaming();
 u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait );
 void Sound_FadeOutCutscene( u32 arg0, s32 arg1 );
 

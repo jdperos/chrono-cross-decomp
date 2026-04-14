@@ -444,6 +444,7 @@ Sound_FadeCdVolume                  = 0x8004A914;
 Sound_FadeCdVolumeFrom              = 0x8004A944;
 Sound_StopMusic                     = 0x8004AB4C;
 Sound_StopSfx                       = 0x8004AB6C;
+Sound_StartAkaoBankStreaming        = 0x8004AC0C;
 Sound_StreamAkaoBankChunk           = 0x8004AC2C;
 Sound_FadeOutCutscene               = 0x8004AF50;
 
