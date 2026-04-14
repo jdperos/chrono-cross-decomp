@@ -448,12 +448,15 @@ Sound_FadeTempoScaleFrom            = 0x8004A9D8;
 Sound_SetMasterPitchScale           = 0x8004AA14;
 Sound_FadeMasterPitchScale          = 0x8004AA40;
 Sound_FadeMasterPitchScaleFrom      = 0x8004AA74;
-
 Sound_StopMusic                     = 0x8004AB4C;
 Sound_StopSfx                       = 0x8004AB6C;
 Sound_StartAkaoBankStreaming        = 0x8004AC0C;
 Sound_StreamAkaoBankChunk           = 0x8004AC2C;
+Sound_StopCutsceneStream            = 0x8004AF00;
+Sound_SetCutsceneVolume             = 0x8004AF20;
 Sound_FadeOutCutscene               = 0x8004AF50;
+Sound_MuteSfx                       = 0x8004B04C;
+Sound_UnmuteSfx                     = 0x8004B080;
 
 //----------------------------------------------------------------------------------------------------------------------
 // LibSpu

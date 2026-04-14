@@ -666,7 +666,11 @@ s32 func_8004AB8C( void* in_Data, s32 in_bWait );
 s32 IsSpuTransferring();
 s32 Sound_StartAkaoBankStreaming();
 u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait );
+void Sound_StopCutsceneStream();
+void Sound_SetCutsceneVolume( s32 in_Volume );
 void Sound_FadeOutCutscene( u32 arg0, s32 arg1 );
+u32 Sound_MuteSfx( u32 arg0 );
+u32 Sound_UnmuteSfx( u32 arg0 );
 
 // SPU management
 void Sound_CopyAndRelocateInstruments( FSoundInstrumentInfo* in_Src, FSoundInstrumentInfo* in_Dst, s32 in_AddrOffset, s32 in_Count);
