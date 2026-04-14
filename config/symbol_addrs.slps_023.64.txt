@@ -442,6 +442,13 @@ Sound_FadePanByMusicId              = 0x8004A8B4;
 Sound_SetCdVolume                   = 0x8004A8EC;
 Sound_FadeCdVolume                  = 0x8004A914;
 Sound_FadeCdVolumeFrom              = 0x8004A944;
+Sound_SetTempoScale                 = 0x8004A978;
+Sound_FadeTempoScale                = 0x8004A9A4;
+Sound_FadeTempoScaleFrom            = 0x8004A9D8;
+Sound_SetMasterPitchScale           = 0x8004AA14;
+Sound_FadeMasterPitchScale          = 0x8004AA40;
+Sound_FadeMasterPitchScaleFrom      = 0x8004AA74;
+
 Sound_StopMusic                     = 0x8004AB4C;
 Sound_StopSfx                       = 0x8004AB6C;
 Sound_StartAkaoBankStreaming        = 0x8004AC0C;

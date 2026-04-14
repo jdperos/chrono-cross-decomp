@@ -614,6 +614,7 @@ static_assert( sizeof(FSoundVoiceModeFlags) == 0xC );
 }; */
 
 // Sound API - IDK I'm just picking names right now....
+// TODO(jperos): These need argument names after I decomp SoundVm2 and see how it works
 s32 InitSound();
 bool Sound_BindAkaoSfxBlob( FAkaoFileBlob* in_Blob );
 void Sound_StartFieldMusic( u32 in_Unk );
@@ -630,6 +631,39 @@ void Sound_SetMutedMusicChannelMask( u32 in_ChannelMask );
 void Sound_SetMusicJumpThreshold( u32 arg0 );
 void Sound_SuspendChannelsByType( u32 in_ChannelType );
 void Sound_RestoreChannelsByType( u32 in_ChannelType );
+void Sound_SetAllSfxVolumeMod( s32 in_VolumeMod );
+void Sound_FadeAllSfxVolumeMod( u32 arg0, s32 in_VolumeMod );
+void Sound_SetSfxVolumeMod( u32 arg0, s32 in_VoiceMask, s32 in_VolumeMod );
+void Sound_FadeSfxVolumeMod( u32 arg0, s32 in_VoiceMask, u32 arg2, s32 in_VolumeMod );
+void Sound_SetAllSfxPanMod( s32 in_Target );
+void Sound_FadeAllSfxPanMod( u32 in_Length, s32 in_Target );
+void Sound_SetSfxPanMod( u32 arg0, s32 in_VoiceMask, s32 in_Target );
+void Sound_FadeSfxPanMod( u32 arg0, s32 in_VoiceMask, u32 arg2, s32 in_Target );
+void Sound_SetAllSfxPitchMod( s32 in_Target );
+void Sound_FadeAllSfxPitchMod( u32 in_Length, s32 in_Target );
+void Sound_SetSfxPitchMod( u32 arg0, s32 in_VoiceMask, s32 in_Target );
+void Sound_FadeSfxPitchMod( u32 arg0, s32 arg1, u32 arg2, s32 arg3 );
+void Sound_SetMasterVolumeByMusicId( u32 arg0, s32 arg1 );
+void Sound_FadeMasterVolumeByMusicId( u32 arg0, u32 arg1, s32 arg2 );
+void Sound_FadeMasterVolumeFromByMusicId( u32 arg0, u32 arg1, s32 arg2, s32 arg3 );
+void Sound_SetPanByMusicId( u32 arg0, s32 arg1 );
+void Sound_FadePanByMusicId( u32 arg0, u32 arg1, s32 arg2 );
+void Sound_SetCdVolume( u32 in_TargetVolume );
+void Sound_FadeCdVolume( u32 arg0, u32 arg1 );
+void Sound_FadeCdVolumeFrom( u32 arg0, u32 arg1, u32 arg2 );
+void Sound_SetTempoScale( s32 arg0 );
+void Sound_FadeTempoScale( u32 arg0, s32 arg1 );
+void Sound_FadeTempoScaleFrom( u32 arg0, s32 arg1, s32 arg2 );
+void Sound_SetMasterPitchScale( s32 arg0 );
+void Sound_FadeMasterPitchScale( u32 arg0, s32 arg1 );
+void Sound_FadeMasterPitchScaleFrom( u32 arg0, s32 arg1, s32 arg2 );
+void func_8004AAB0( s32 arg0 );
+void func_8004AADC( u32 arg0, s32 arg1 );
+void func_8004AB10( u32 arg0, s32 arg1, s32 arg2 );
+void Sound_StopMusic();
+void Sound_StopSfx();
+s32 func_8004AB8C( void* in_Data, s32 in_bWait );
+s32 IsSpuTransferring();
 s32 Sound_StartAkaoBankStreaming();
 u32 Sound_StreamAkaoBankChunk( s32* in_Data, u32 in_Size, s32 in_bWait );
 void Sound_FadeOutCutscene( u32 arg0, s32 arg1 );
